@@ -16,4 +16,11 @@ app.set('views','views');
 app.use('/admin',adminRoutes);
 app.use(shopRotues);
 
+app.use((req,res,next) => {
+    res.render('404',{
+       pageTitle: '404',
+       path: '/none'
+    });
+});
+
 app.listen(3000);

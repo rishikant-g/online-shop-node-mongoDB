@@ -18,4 +18,5 @@ module.exports = class Product{
     static fetchSingleProduct(id){
         return db.execute("SELECT * FROM products WHERE id = ?",[id]);
     }
+
 }

@@ -48,3 +48,18 @@ exports.getEditProduct = (req,res,next) => {
         console.log(err);
     });
 }
+
+
+exports.getSingleProduct = (req,res,next)=> {
+    ProductModel.fetchSingleProduct(res.params.productId)
+    .then(([product]) => {
+        res.render('admin/single-product',{
+            path: '/admin/products',
+            products: product[0],
+            pageTitle: product[0].title
+        }); 
+    })
+    .catch(err =>{
+        console.log(err);
+    });
+};

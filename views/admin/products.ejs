@@ -1,0 +1,27 @@
+<%- include('../includes/header.ejs') %>
+</head>
+<body>
+<%- include('../includes/admin-navigation.ejs') %>
+<% for(product of products){ %>
+    <div class="col-sm-4">
+        <div class="product-image-wrapper">
+            <div class="single-products">
+                    <div class="productinfo text-center">
+                        <img src="../images/home/product1.jpg" alt="" />
+                        <h2>$ <%= product.price %></h2>
+                        <p><%= product.title %></p>
+                        <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                        <a href="/admin/product/<%= product.id %>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>View Details</a>
+                        <a href="/admin/edit-product/<%= product.id %>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Edit Product</a>
+                        <form method="POST" action = "/admin/delete-product">
+                            <input type="hidden" name="productId" value="<%= product.id %>" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+<% } %>
+    
+<%- include('../includes/footer.ejs') %>

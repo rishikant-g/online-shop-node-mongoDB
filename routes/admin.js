@@ -8,6 +8,10 @@ router.get('/add-product',productController.getAddProduct);
 
 router.post('/add-product',productController.postAddProduct);
 
+router.post('/update-product',productController.postUpdateProduct);
+
+router.post('/delete-product',productController.postDeleteProduct);
+
 router.get('/edit-product/:productId',productController.getEditProduct);
 
 router.get('/get-single-product/:productId',productController.getSingleProduct);

@@ -1,10 +1,29 @@
-const mysql = require('mysql2');
+const mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient;
 
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'MySQL123#',
-    database: 'onlineshop'
-});
+var _db;
+const MongoConnect =  callback => {
+    MongoClient.connect('mongodb+srv://testuser:dSKM7uHSAYv5JbWo@cluster0-esohe.mongodb.net/test?retryWrites=true&w=majority',{
+        useNewUrlParser: true,//just an option
+        useUnifiedTopology: true
+    })
+    .then(client => {
+        console.log('connected');
+        _db = client.db();
+        callback();
+    })
+    .catch(err => {
+        console.log(err);
+        throw err;
+    });
+}
 
-module.exports = pool.promise();
+const getDb = () => {
+    if(_db){
+        return _db;
+    }
+    throw "No database connection";
+}
+
+exports.getDb = getDb;
+exports.MongoConnect = MongoConnect;

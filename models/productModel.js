@@ -1,4 +1,5 @@
-const db = require('../utils/database');
+const getDb = require('../utils/database').getDb;
+const mongoDb = require('mongodb');
 module.exports = class Product{
     constructor(title,description,price,imageUrl){
         this.title = title;
@@ -8,15 +9,45 @@ module.exports = class Product{
     }
 
     save(){
-        return db.execute("INSERT INTO products(title,description,price,imageurl) VALUES(?,?,?,?)",[this.title,this.description,this.price,this.imageUrl]);
+        const db = getDb();
+        return db.collection('products').insertOne(this);
     }
 
     static fetchAllProduct(){
-        return db.execute("SELECT * FROM products");
+        const db = getDb();
+        return db.collection('products').find().toArray();
     }
     
     static fetchSingleProduct(id){
-        return db.execute("SELECT * FROM products WHERE id = ?",[id]);
+        const db = getDb();
+        return db.collection('products').find({_id: mongoDb.ObjectID(id)}).limit(1).toArray();
     }
 
+    updateProduct(req){
+        const db = getDb();
+        console.log(req.body.product_id);
+        return db.collection('products')
+        .updateOne(
+            {_id: mongoDb.ObjectID(req.body.product_id)},
+            { $set:
+                {
+                    title: req.body.title,
+                    description: req.body.description,
+                    price: req.body.price,
+                    imageUrl: req.body.imageUrl
+                }
+              }
+            ).then(result => {
+                return result;
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    deleteProduct(id){
+        const db = getDb();
+        return db.collection('products')
+        .deleteOne({_id: mongoDb.ObjectID(id)});
+    }
 }

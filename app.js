@@ -3,6 +3,7 @@ const bodyParse = require('body-parser');
 const path = require('path');
 const adminRoutes = require('./routes/admin');
 const shopRotues = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 const app = express();
 
 const MongoClient = require('./utils/database').MongoConnect;
@@ -23,6 +24,7 @@ app.use("/a",(req,res,next) => {
 
 app.use('/admin',adminRoutes);
 app.use(shopRotues);
+app.use(authRoutes);
 
 
 

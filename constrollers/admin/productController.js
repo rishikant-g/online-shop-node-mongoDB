@@ -1,7 +1,7 @@
 const ProductModel = require('../../models/productModel');
 // Getting all product 
 exports.getProducts = (req,res,next) => {
-    ProductModel.fetchAllProduct()
+    ProductModel.find()
     .then(product => {
         res.render('admin/products',{
             path: '/admin/products',
@@ -25,7 +25,13 @@ exports.getAddProduct = (req,res,next) => {
 
 // Saving form data to DB
 exports.postAddProduct = (req,res,next) => {
-    const product = new ProductModel(req.body.title,req.body.description,req.body.price,req.body.imageUrl);
+    const product = new ProductModel(
+        {
+            title: req.body.title,
+            description: req.body.description,
+            price: req.body.price,
+            imageurl: req.body.imageUrl}
+        );
     product.save()
     .then(result => {
         console.log(result);
@@ -41,9 +47,15 @@ exports.postAddProduct = (req,res,next) => {
 
 // Upate product data
 exports.postUpdateProduct = (req,res,next) => {
-    const product = new ProductModel();
-    product.updateProduct(req)
-    .then(result => {
+
+    ProductModel.findById(req.body.productId)
+    .then(product => {
+        product.title = req.body.title,
+        product.description = req.body.description,
+        product.price = req.body.price,
+        product.imageUrl = req.body.imageUrl;
+        product.save();
+        console.log('updated');
         res.redirect("/");
     })
     .catch(err => {
@@ -54,9 +66,8 @@ exports.postUpdateProduct = (req,res,next) => {
 // Show edit form to update product details 
 exports.getEditProduct = (req,res,next) => {
     prductId = req.params.productId;
-    ProductModel.fetchSingleProduct(prductId)
+    ProductModel.findById(prductId)
     .then(product => {
-        console.log(product);
         res.render('admin/edit-product',{
             path: '/admin/edit-product',
             pageTitle: product.title,
@@ -71,12 +82,11 @@ exports.getEditProduct = (req,res,next) => {
 
 // Show details of single product 
 exports.getSingleProduct = (req,res,next)=> {
-    console.log(req.params.productId);
-    ProductModel.fetchSingleProduct(req.params.productId)
+    ProductModel.findById(req.params.productId)
     .then(product => {
         res.render('admin/single-product',{
             path: '/admin/products',
-            products: product,
+            product: product,
             pageTitle: product.title
         }); 
     })
@@ -86,11 +96,11 @@ exports.getSingleProduct = (req,res,next)=> {
 }
 
 exports.postDeleteProduct = (req,res,next) => {
-    const product =new ProductModel();
-    product.deleteProduct(req.body.product_Id)
-    .then(result => {
-        console.log("Deleted");
-        res.redirect("/");
+
+    ProductModel.findByIdAndRemove(req.body.productId)
+    .then( () => {
+        console.log('deleted');
+        res.redirect("/admin/products");  
     })
     .catch(err => {
         console.log(err);

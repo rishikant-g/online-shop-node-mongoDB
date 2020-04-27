@@ -1,48 +1,53 @@
-const getDb = require('../../utils/database').getDb;
+const User = require('../../models/UserModel');
 const bcrypt = require('bcrypt');
 
-exports.getSignUp = (req,res,next) => {
-    res.render('auth/sign-up',{
+exports.getSignUp = (req, res, next) => {
+    res.render('auth/sign-up', {
         path: '/sign-up',
         pageTitle: "Sign Up"
     });
 }
 
-exports.postSignUp = (req,res,next) => {
-const db = getDb();
-db.collection('users').findOne({email: req.body.email})
-.then(result => {
-    if(result){
+exports.postSignUp = (req, res, next) => {
+    User.findOne({
+            email: req.body.email
+        })
+        .then(result => {
+            if (result) {
+                console.log("email already taken");
                 return res.redirect("/sign-up");
             }
-            return bcrypt.hash(req.body.password,12);
-    })  
-    .then(password => {
-        return db.collection('users').insertOne({email: req.body.email,password});
-    })
-    .then(result => {
-        console.log(result);
-        res.redirect("/login");
-    })
-    .catch(err => {
-        console.log(err);
-    });
-
+            bcrypt.hash(req.body.password, 12)
+                .then(password => {
+                    const user = new User({
+                        name: req.body.name,
+                        email: req.body.email,
+                        password
+                    })
+                    user.save();
+                })
+                .then(() => {
+                    return res.redirect('/login');
+                });
+        })
+        .catch(err => {
+            console.log(err);
+        });
 }
-        
 
 
 
-exports.getLogin = (req,res,next) => {
-    res.render('auth/login',{
+
+exports.getLogin = (req, res, next) => {
+    res.render('auth/login', {
         path: "/login",
         pageTitle: "Login"
     });
 }
 
-exports.postLogin = (req,res,next) => {
+exports.postLogin = (req, res, next) => {
     const db = getDb();
-    res.render('auth/login',{
+    res.render('auth/login', {
         path: "/login",
         pageTitle: "Login"
     });

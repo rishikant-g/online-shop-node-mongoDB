@@ -2,28 +2,26 @@
 </head>
 <body>
     <%- include('../includes/admin-navigation.ejs') %>
-    <% for(p of product) { %>
     <div class="container">
         <form action="/admin/update-product" method="POST">
-            <input type="hidden" value="<%= p._id %>" name="product_id"/>
+            <input type="hidden" value="<%= product._id %>" name="productId"/>
             <div class="form-group">
                 <label for="title">Product Title</label>
-                <input type="text" class="form-control" id="title" name="title" value="<%= p.title %>"/>
+                <input type="text" class="form-control" id="title" name="title" value="<%= product.title %>"/>
             </div>
             <div class="form-group">
                 <label for="price">Price:</label>
-                <input type="text" class="form-control" id="price" name="price" value="<%= p.price %>" />
+                <input type="text" class="form-control" id="price" name="price" value="<%= product.price %>" />
             </div>
             <div class="form-group">
                 <label for="description">Description:</label>
-                <input type="text" class="form-control" id="description" name="description" value="<%= p.description %>" />
+                <input type="text" class="form-control" id="description" name="description" value="<%= product.description %>" />
             </div>
             <div class="form-group">
                 <label for="imageurl">Image Url</label>
-                <input type="text" class="form-control" id="imageurl" name="imageUrl" value="<%= p.imageUrl %>">
+                <input type="text" class="form-control" id="imageurl" name="imageUrl" value="<%= product.imageurl %>">
             </div>
                 <button type="submit" class="btn btn-default">Submit</button>
         </form>
     </div>
-    <% } %> 
 <%- include('../includes/footer.ejs') %>

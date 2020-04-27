@@ -6,12 +6,29 @@ const shopRotues = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const app = express();
 const mongoose = require('mongoose');
-const UserModel = require('./models/UserModel');
+const session = require('express-session');
+var MongoDBStore = require('connect-mongodb-session')(session);
 
+
+const MONGODBURI = 'mongodb+srv://rishi:Risheekant@123@cluster0-esohe.mongodb.net/test';
+var store = new MongoDBStore({   // The store will be used to store session in database;
+    uri: MONGODBURI,
+    collection: 'sessions'
+  });
 
 app.use(bodyParse.urlencoded({extended:true}));
 
 app.use(express.static(path.join(__dirname,'public')));
+
+// Initializing session 
+app.use(session({
+    secret: 'This is a secret',
+    store: store,
+    resave: true,
+    saveUninitialized: true
+  }));
+   
+
 app.set('view engine','ejs');
 app.set('views','views');
 
@@ -20,19 +37,7 @@ app.use('/admin',adminRoutes);
 app.use(shopRotues);
 app.use(authRoutes);
 
-
-// app.use((req,res,next) => {
-//     UserModel.findOne("5ea678bd4958dd18b04216a0")
-//     .then(user => {
-//         res.user = user,
-//         next();
-//     })
-//     .catch(err => {
-//         console.log(err);
-//     });
-// });
-
-mongoose.connect('mongodb+srv://rishi:Risheekant@123@cluster0-esohe.mongodb.net/test?retryWrites=true&w=majority',{ useUnifiedTopology: true,useNewUrlParser: true })
+mongoose.connect(MONGODBURI,{ useUnifiedTopology: true,useNewUrlParser: true })
     .then( () => {
         app.listen(3000);
         console.log('Server started');

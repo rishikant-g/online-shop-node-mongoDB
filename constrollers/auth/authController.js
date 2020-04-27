@@ -36,8 +36,6 @@ exports.postSignUp = (req, res, next) => {
 }
 
 
-
-
 exports.getLogin = (req, res, next) => {
     res.render('auth/login', {
         path: "/login",
@@ -46,9 +44,33 @@ exports.getLogin = (req, res, next) => {
 }
 
 exports.postLogin = (req, res, next) => {
-    const db = getDb();
-    res.render('auth/login', {
-        path: "/login",
-        pageTitle: "Login"
-    });
+    User.findOne({
+            email: req.body.email
+        })
+        .then(user => {
+            if(!user){
+                console.log("email does not exist");
+                return res.redirect("/login");
+            }
+            bcrypt.compare(req.body.password, user.password)
+            .then(isValidUserAndPassword => {
+                if (isValidUserAndPassword) {
+                    req.session.isLogin = true;
+                    req.session.user = user;
+                   return req.session.save(err => {
+                        console.log(err);
+                        res.redirect('/admin/products');
+                    });
+                    
+                }
+                console.log("invalid credentials");
+                res.redirect('/login');
+            })
+            .catch(err => {
+                console.log("Invalid Password");
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
 }

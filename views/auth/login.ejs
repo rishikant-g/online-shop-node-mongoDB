@@ -4,7 +4,13 @@
 <%- include('../includes/admin-navigation.ejs') %>
 
 <div class="container">
+    <% if(errorMessage) { %>
+        <div style="background-color: red;">
+            <%= errorMessage %>
+        </div>
+    <% } %>
     <form action="/login" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
         <div class="form-group">
             <label for="email">Email</label>
             <input type="text" class="form-control" id="email" name="email">

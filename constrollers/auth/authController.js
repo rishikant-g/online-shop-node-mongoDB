@@ -1,5 +1,14 @@
 const User = require('../../models/UserModel');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const sendGridTranportor = require('nodemailer-sendgrid-transport');
+const transporter = nodemailer.createTransport(sendGridTranportor({
+    auth:{
+        api_key: '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'
+    }
+
+}));
+
 
 exports.getSignUp = (req, res, next) => {
     res.render('auth/sign-up', {
@@ -24,11 +33,23 @@ exports.postSignUp = (req, res, next) => {
                         email: req.body.email,
                         password
                     })
-                    user.save();
+                  return user.save();
                 })
-                .then(() => {
-                    return res.redirect('/login');
-                });
+                .then((result) => {
+                    res.redirect('/login');
+                     transporter.sendMail({
+                        to: req.body.email,
+                        from: 'rishikant.npnp@gmail.com',
+                        subject: 'Sign up succeeded',
+                        html: '<h1>Sign up done </h1>'
+                    })
+                    .then(result => {
+                        console.log('mail send');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+                })
         })
         .catch(err => {
             console.log(err);
@@ -39,7 +60,8 @@ exports.postSignUp = (req, res, next) => {
 exports.getLogin = (req, res, next) => {
     res.render('auth/login', {
         path: "/login",
-        pageTitle: "Login"
+        pageTitle: "Login",
+        errorMessage: req.flash('error')
     });
 }
 
@@ -49,7 +71,7 @@ exports.postLogin = (req, res, next) => {
         })
         .then(user => {
             if(!user){
-                console.log("email does not exist");
+                req.flash('error','User does not exist');
                 return res.redirect("/login");
             }
             bcrypt.compare(req.body.password, user.password)
@@ -63,7 +85,7 @@ exports.postLogin = (req, res, next) => {
                     });
                     
                 }
-                console.log("invalid credentials");
+                req.flash('error','Invalid password');
                 res.redirect('/login');
             })
             .catch(err => {
@@ -73,4 +95,11 @@ exports.postLogin = (req, res, next) => {
         .catch(err => {
             console.log(err);
         });
+}
+
+exports.postLogout = (req,res,next) => {
+    req.session.destroy(err => {
+        console.log(err);
+        res.redirect('/login');
+    });
 }

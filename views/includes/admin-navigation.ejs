@@ -12,7 +12,14 @@
                         <ul class="nav navbar-nav">
                             <li><a href="/admin/products" class=" <%= path == '/admin/products' ? 'active' : '' %>"><i class="fa fa-user"></i> Products</a></li>
                             <li><a href="/admin/add-product"class=" <%= path == '/admin/add-product' ? 'active' : '' %>" ><i class="fa fa-star"></i> Add Product</a></li>
+                            <% if(isAuthenticated) { %>
+                                <form method="POST" action ="/logout">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+                                  <button type="submit">Logout</button>
+                                </form>
+                            <% } else { %>
                             <li><a href="/login" ><i class="fa fa-star"></i> Login</a></li>
+                            <% } %>
                         </ul>
                     </div>
                 </div>

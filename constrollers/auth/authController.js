@@ -17,7 +17,8 @@ exports.getSignUp = (req, res, next) => {
         path: '/sign-up',
         pageTitle: "Sign Up",
         errorMessage: undefined,
-        oldValue: {name:'',email: ''}
+        oldValue: {name:'',email: ''},
+        validationErrors : []
     });
 }
 
@@ -29,7 +30,8 @@ exports.postSignUp = (req, res, next) => {
             path: '/sign-up',
             pageTitle: "Sign Up",
             errorMessage: errors.array()[0].msg,
-            oldValue: {email: req.body.email, name: req.body.name}
+            oldValue: {email: req.body.email, name: req.body.name},
+            validationErrors : errors.array()
         });
     }
     User.findOne({

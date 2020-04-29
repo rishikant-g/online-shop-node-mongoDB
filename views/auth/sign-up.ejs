@@ -18,7 +18,12 @@
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" class="form-control" id="email" name="email" value="<%= oldValue.email %>">
+                <input
+                    type="text" 
+                    class="form-control <%= validationErrors.find(currentElement => currentElement.param ==='email') ? 'custom-error' : ''  %>" id="email" 
+                    name="email" 
+                    value="<%= oldValue.email %>"
+                />
             </div>
             <div class="form-group">
                 <label for="password">Password</label>

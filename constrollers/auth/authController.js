@@ -15,7 +15,9 @@ const transporter = nodemailer.createTransport(sendGridTranportor({
 exports.getSignUp = (req, res, next) => {
     res.render('auth/sign-up', {
         path: '/sign-up',
-        pageTitle: "Sign Up"
+        pageTitle: "Sign Up",
+        errorMessage: undefined,
+        oldValue: {name:'',email: ''}
     });
 }
 
@@ -26,7 +28,8 @@ exports.postSignUp = (req, res, next) => {
         return res.status(422).render('auth/sign-up', {
             path: '/sign-up',
             pageTitle: "Sign Up",
-            errorMessage: errors.array()[0].msg
+            errorMessage: errors.array()[0].msg,
+            oldValue: {email: req.body.email, name: req.body.name}
         });
     }
     User.findOne({

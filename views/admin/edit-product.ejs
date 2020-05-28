@@ -3,7 +3,7 @@
 <body>
     <%- include('../includes/admin-navigation.ejs') %>
     <div class="container">
-        <form action="/admin/update-product" method="POST">
+        <form action="/admin/update-product" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
             <input type="hidden" value="<%= product._id %>" name="productId"/>
             <div class="form-group">

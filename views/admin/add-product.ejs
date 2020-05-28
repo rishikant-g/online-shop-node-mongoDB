@@ -3,7 +3,7 @@
 <body>
     <%- include('../includes/admin-navigation.ejs') %>
     <div class="container">
-        <form action="/admin/add-product" method="POST">
+        <form action="/admin/add-product" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
             <div class="form-group">
                 <label for="title">Product Title</label>
@@ -18,8 +18,8 @@
                 <input type="text" class="form-control" id="description" name="description">
             </div>
             <div class="form-group">
-                <label for="imageurl">Image Url</label>
-                <input type="text" class="form-control" id="imageurl" name="imageUrl">
+                <label for="imageurl">Image</label>
+                <input type="file" class="form-control" id="imageurl" name="image">
             </div>
                 <button type="submit" class="btn btn-default">Submit</button>
         </form>

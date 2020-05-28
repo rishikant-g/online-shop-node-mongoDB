@@ -25,13 +25,19 @@ exports.getAddProduct = (req,res,next) => {
 
 // Saving form data to DB
 exports.postAddProduct = (req,res,next) => {
+    const imageUrl = req.file;
+    console.log(imageUrl);
+    if(!imageUrl){
+        return console.log('invalid image');
+    }
     const product = new ProductModel(
         {
             title: req.body.title,
             description: req.body.description,
             price: req.body.price,
-            imageurl: req.body.imageUrl}
-        );
+            image: req.file.path.replace("\\","/")
+        });
+        
     product.save()
     .then(result => {
         console.log(result);
